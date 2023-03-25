@@ -50,6 +50,16 @@ func OldAddPoint(p1, p2 unsafe.Pointer) unsafe.Pointer {
 	return unsafe.Pointer(&p)
 }
 
+func MutatePoint(p *Point) {
+	p.X = p.X * 2
+	p.Y = p.Y * 2
+}
+
+//export WrapMutatePoint
+func WrapMutatePoint(p unsafe.Pointer) {
+	MutatePoint((*Point)(p))
+}
+
 func main() {
 	fmt.Println("main")
 }

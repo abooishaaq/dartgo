@@ -84,6 +84,7 @@ extern void* WrapAddPoint(void* p1, void* p2);
 // calling this from dart will cause a runtime error
 //
 extern void* OldAddPoint(void* p1, void* p2);
+extern void WrapMutatePoint(void* p);
 
 #ifdef __cplusplus
 }
