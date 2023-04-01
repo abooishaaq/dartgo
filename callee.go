@@ -2,7 +2,6 @@ package main
 
 import "C"
 import (
-	"fmt"
 	"unsafe"
 )
 
@@ -60,6 +59,6 @@ func WrapMutatePoint(p unsafe.Pointer) {
 	MutatePoint((*Point)(p))
 }
 
-func main() {
-	fmt.Println("main")
-}
+// func main() {
+// 	fmt.Println("main")
+// }

@@ -2,3 +2,5 @@ callee.so
 .vscode
 .dart_tool
 _obj
+lib.so
+lib.h
