@@ -4,3 +4,5 @@ callee.so
 _obj
 lib.so
 lib.h
+callee.h
+generated.go
