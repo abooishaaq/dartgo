@@ -2,6 +2,9 @@ package main
 
 import "C"
 import (
+	"encoding/binary"
+	"fmt"
+	"reflect"
 	"unsafe"
 )
 
@@ -59,6 +62,52 @@ func WrapMutatePoint(p unsafe.Pointer) {
 	MutatePoint((*Point)(p))
 }
 
-// func main() {
-// 	fmt.Println("main")
-// }
+func PointArray() []Point {
+	arr := make([]Point, 3)
+	return arr
+}
+
+//export WrapPointArray
+func WrapPointArray() unsafe.Pointer {
+	arr := PointArray()
+	r := reflect.ValueOf(arr)
+	s := binary.Size(r)
+	mem := C.malloc(goint_to_csize_t(s))
+	p := (*[]Point)(mem)
+	*p = arr
+	return mem
+}
+
+func Appendd(arr []Point, p Point) []Point {
+	return append(arr, p)
+}
+
+//export WrapAppendd
+func WrapAppendd(arr unsafe.Pointer, p unsafe.Pointer) unsafe.Pointer {
+	arr_itn := (*[]Point)(arr)
+	p_itn := (*Point)(p)
+	res := Appendd(*arr_itn, *p_itn)
+	return unsafe.Pointer(&res)
+}
+
+func PrintPointArray(arr []Point) {
+	for _, p := range arr {
+		println(p.X, p.Y)
+	}
+}
+
+//export WrapPrintPointArray
+func WrapPrintPointArray(arr unsafe.Pointer) {
+	arr_itn := (*[]Point)(arr)
+	PrintPointArray(*arr_itn)
+}
+
+func goint_to_csize_t(i int) C.size_t {
+	s := make([]byte, 8)
+	binary.LittleEndian.PutUint32(s, uint32(i))
+	return C.size_t(binary.LittleEndian.Uint64(s))
+}
+
+func main() {
+	fmt.Println("main")
+}

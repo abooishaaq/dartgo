@@ -23,6 +23,17 @@ typedef AddPoint = ffi.Pointer<GoPoint> Function(
 typedef mutate_point_func = ffi.Void Function(ffi.Pointer<GoPoint> p);
 typedef MutatePoint = void Function(ffi.Pointer<GoPoint> p);
 
+typedef point_array_func = ffi.Pointer<GoPoint> Function();
+typedef PointArray = ffi.Pointer<GoPoint> Function();
+
+typedef append_point_func = ffi.Pointer<GoPoint> Function(
+    ffi.Pointer<GoPoint> p1, ffi.Pointer<GoPoint> p2);
+typedef AppendPoint = ffi.Pointer<GoPoint> Function(
+    ffi.Pointer<GoPoint> p1, ffi.Pointer<GoPoint> p2);
+
+typedef print_point_array_func = ffi.Void Function(ffi.Pointer<GoPoint> p);
+typedef PrintPointArray = void Function(ffi.Pointer<GoPoint> p);
+
 void main() {
   // Load the shared library
   var libraryPath = './callee.so';
@@ -43,6 +54,15 @@ void main() {
   final MutatePoint mutatePoint = dylib
       .lookup<ffi.NativeFunction<mutate_point_func>>('WrapMutatePoint')
       .asFunction();
+  final PointArray pointArray = dylib
+      .lookup<ffi.NativeFunction<point_array_func>>('WrapPointArray')
+      .asFunction();
+  final AppendPoint appendPoint = dylib
+      .lookup<ffi.NativeFunction<append_point_func>>('WrapAppendd')
+      .asFunction();
+  final PrintPointArray printPointArray = dylib
+      .lookup<ffi.NativeFunction<print_point_array_func>>('WrapPrintPointArray')
+      .asFunction();
 
   // Call the "NewPoint" function and get the result as a Dart struct
   final goPoint = newPoint(2.0, 3.0);
@@ -57,6 +77,11 @@ void main() {
 
   mutatePoint(added);
   print("mutated: ${added.ref.x}, ${added.ref.y}");
+
+  var array = pointArray();
+  appendPoint(array, goPoint);
+  appendPoint(array, goPoint2);
+  printPointArray(array);
 
   final NewPoint NewPointFail = dylib
       .lookup<ffi.NativeFunction<new_point_func>>('OldNewPoint')
